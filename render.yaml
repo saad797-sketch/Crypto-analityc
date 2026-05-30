@@ -3,20 +3,21 @@ services:
   - type: web
     name: crypto-intelligence-api
     env: docker
-    dockerfile: backend/Dockerfile.prod
-    rootDir: .
+    # We set rootDir to 'backend' so the Docker context is only the backend code
+    rootDir: backend
+    dockerfile: Dockerfile.prod
     plan: free
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: crypto-db
+          name: crypto-db-pro
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
       - key: ALGORITHM
         value: HS256
 
-  # Database
+# Database
 databases:
-  - name: crypto-db
+  - name: crypto-db-pro
     plan: free
