@@ -15,6 +15,12 @@ class Settings(BaseSettings):
     # Database Settings
     DATABASE_URL: str = "postgresql://postgres:postgres@db:5432/crypto_db"
 
+    @property
+    def sqlalchemy_database_url(self) -> str:
+        if self.DATABASE_URL.startswith("postgres://"):
+            return self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        return self.DATABASE_URL
+
     # Security
     SECRET_KEY: str = "your-secret-key-change-me-in-production"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
