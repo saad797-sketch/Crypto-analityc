@@ -17,9 +17,16 @@ class Settings(BaseSettings):
 
     @property
     def sqlalchemy_database_url(self) -> str:
-        if self.DATABASE_URL.startswith("postgres://"):
-            return self.DATABASE_URL.replace("postgres://", "postgresql://", 1)
-        return self.DATABASE_URL
+        url = self.DATABASE_URL
+        if not url or "db:5432" in url:
+            # Fallback to a dummy sqlite for health checks if DB is not set
+            return "sqlite:///./test.db"
+        
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return url
 
     # Security
     SECRET_KEY: str = "your-secret-key-change-me-in-production"

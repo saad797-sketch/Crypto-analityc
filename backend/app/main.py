@@ -29,7 +29,12 @@ app.include_router(api_v1_router, prefix=settings.API_V1_STR)
 
 @app.on_event("startup")
 def on_startup():
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables verified/created successfully.")
+    except Exception as e:
+        logger.error(f"Database connection failed during startup: {str(e)}")
+        logger.info("Continuing startup... DB features might be unavailable.")
 
 @app.get("/")
 async def root():
