@@ -1,3 +1,4 @@
+import numpy as np
 from typing import List, Dict, Any
 from app.services.ta_service import ta_service
 from app.services.news_service import news_service
@@ -21,7 +22,8 @@ class MarketIntelligenceService:
         
         # 3. Calculate Risk Score (0-100)
         # Risk increases with high RSI or extreme price volatility
-        volatility = np.std(prices) / np.mean(prices) * 100
+        prices_arr = np.array(prices)
+        volatility = np.std(prices_arr) / (np.mean(prices_arr) + 1e-10) * 100
         risk_score = min(100, int((volatility * 5) + (abs(rsi - 50) * 1.5)))
         
         # 4. Calculate Momentum Score (0-100)
@@ -49,7 +51,7 @@ class MarketIntelligenceService:
         elif risk_score < 30:
             explanations.append("Low risk environment: Price action is stable and consolidating.")
 
-        if sentiment_summary == "bullish" and ta["trend"].includes("Bullish"):
+        if sentiment_summary == "bullish" and "Bullish" in ta["trend"]:
             explanations.append("Technicals and social sentiment are perfectly aligned for growth.")
 
         return {
@@ -68,4 +70,3 @@ class MarketIntelligenceService:
         }
 
 intel_service = MarketIntelligenceService()
-import numpy as np # Ensure numpy is available for volatility calculation
