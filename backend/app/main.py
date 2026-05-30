@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import settings
+from app.core.config import settings, logger
 from app.core.middleware import ErrorHandlingMiddleware
 from app.api.v1_endpoints import router as api_v1_router
 from app.core.database import engine, Base
